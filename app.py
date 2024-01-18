@@ -73,7 +73,7 @@ def predict():
     users = data['users']
     reviews = data['reviews']
     originality_result=[]
-    for i in range(len(users)):
+    for i in range(len(reviews)):
         result = predict_originality(users[i],reviews[i])
         originality_result.append(result)
     return jsonify({"prediction":originality_result})

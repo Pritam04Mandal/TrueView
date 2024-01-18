@@ -17,22 +17,20 @@ document.addEventListener('DOMContentLoaded', function () {
         const extractedClasses = extractClassesFromHTML(html_code);
       
         product_name_class= extract_product_name(extractedClasses);
-        // resultDiv.innerText=product_name_class;
+
         reviewer_name_class= extract_reviewer_name(extractedClasses);
-        // resultDiv.innerText+=" "+reviewer_name_class;
+
         review_class= extract_review(extractedClasses);
-        // resultDiv.innerText+=" "+review_class;
 
         resp= [product_name_class, reviewer_name_class, review_class];
         chrome.tabs.sendMessage(currentTab.id, { action: 'sendProductNameClass', resp}, function (response) {
-          console.log('Product name class sent to content script:');
-          // resultDiv.textContent += response.received ? response.product_name: 'Error';
 
+          product = response.product_name;
           users = response.users;
           reviews = response.reviews;
 
-          // var hello = JSON.parse(response)
-          // resultDiv.innerText = hello.received;
+          resultDiv.innerHTML=`<h3> ${product} </h3>`;
+
         });
         
       });
@@ -52,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
     })
       if (response.ok) {
         const jsonResponse = await response.json();
-        // resultDiv.textContent = (jsonResponse.prediction);
         var prediction = jsonResponse.prediction;
         for (var i = 0; i < prediction.length; i++) {
           var node = document.createElement("p");
@@ -95,7 +92,7 @@ function  extract_product_name(allClasses){
     return res;
 }
 function  extract_reviewer_name(allClasses){
-  pnames_class=["_2V5EHH", "fdbk-container__details__info__username", "_reviewUserName", "css-amd8cf"]
+  pnames_class=["_2V5EHH", "x-review-section__author", "_reviewUserName", "css-amd8cf"]
   res=""
     pnames_class.forEach(element => {
       console.log(element)
@@ -107,7 +104,7 @@ function  extract_reviewer_name(allClasses){
     return res;
 }
 function  extract_review(allClasses){
-  pnames_class=["t-ZTKy", "fdbk-container__details__comment", "user-review", "css-1n0nrdk"]
+  pnames_class=["t-ZTKy", "x-review-section__content", "user-review", "css-1n0nrdk"]
   res=""
     pnames_class.forEach(element => {
       console.log(element)

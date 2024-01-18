@@ -20,12 +20,13 @@
       const reviewer = document.querySelectorAll('.' + reviewer_name_class);
       reviewer.forEach(element => {
 
-        if (reviewer_name_class==="fdbk-container__details__info__username"){
-          users.push(element.textContent.substring(0,5));
+        if (reviewer_name_class==="x-review-section__author"){
+          console.log(element.textContent)
+          const startIndex = element.textContent.indexOf("by ");
+          users.push(startIndex !== -1 ? element.textContent.slice(3).trim() : element.textContent);
         }else{
           users.push(element.textContent);
         }
-        // console.log('Customer:', modifiedText);
       });
 
       const review = document.querySelectorAll('.' + review__class);
@@ -36,7 +37,6 @@
         }else{
           reviews.push(element.textContent);
         }
-        // console.log('Review:', modifiedText);
       });
 
       sendResponse({ received: true,product_name: product.textContent,users: users,reviews: reviews });
