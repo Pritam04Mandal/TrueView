@@ -1,11 +1,6 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, accuracy_score
 import pickle
-import joblib
-from flask_wtf.csrf import CSRFProtect
 # Read the dataset
 filePath = './fake reviews dataset udated.csv'
 df = pd.read_csv(filePath)
