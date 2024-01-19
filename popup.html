@@ -6,19 +6,31 @@
   <script src="popup.js"></script>
   <style>
     body {
-      width: 200px;
+      width: 400px;
       padding: 10px;
     }
 
     button {
-      padding: 8px;
-      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      border: 2px solid #3498db;
+      color: #3498db;
+      background-color: #ffffff;
+      border-radius: 5px;
+      margin: 0 auto;
     }
   </style>
 </head>
 
 <body>
-  <h2>HTML Extractor</h2>
+  <h1 style="color: #f03d64; text-align: center;">TrueView</h1>
+  <hr>
   <button id="extractButton">Check Reviews</button>
   <div id="result"></div>
 </body>

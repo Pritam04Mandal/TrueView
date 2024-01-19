@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
           users = response.users;
           reviews = response.reviews;
 
-          resultDiv.innerHTML=`<h3> ${product} </h3>`;
+          resultDiv.innerHTML=`<br><b>Product name:</b> ${product}`;
 
         });
         
@@ -52,9 +52,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const jsonResponse = await response.json();
         var prediction = jsonResponse.prediction;
         for (var i = 0; i < prediction.length; i++) {
-          var node = document.createElement("p");
-          node.textContent = "Users: " + users[i] +  " Prediction: " + prediction[i].originality_percentage + "% Real";
-          resultDiv.appendChild(node);
+          var div = document.createElement("div");
+          div.innerHTML=`<hr><p><b>User:</b> ${users[i]}</p>
+                          <p><b>Prediction:</b> ${prediction[i].originality_percentage} % Real</p>`;
+          resultDiv.appendChild(div);
         }
         console.log(prediction);
       }
