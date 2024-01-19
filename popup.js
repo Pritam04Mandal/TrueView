@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
-  html_code=""
+  html_code = ""
   var extractButton = document.getElementById('extractButton');
   var resultDiv = document.getElementById('result');
 
-  var users =[];
-  var reviews =[];
+  var users = [];
+  var reviews = [];
 
   extractButton.addEventListener('click', async function () {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -15,24 +15,25 @@ document.addEventListener('DOMContentLoaded', function () {
         html_code = response && response.html ? response.html : '';
 
         const extractedClasses = extractClassesFromHTML(html_code);
-      
-        product_name_class= extract_product_name(extractedClasses);
 
-        reviewer_name_class= extract_reviewer_name(extractedClasses);
+        product_name_class = extract_product_name(extractedClasses);
 
-        review_class= extract_review(extractedClasses);
+        reviewer_name_class = extract_reviewer_name(extractedClasses);
 
-        resp= [product_name_class, reviewer_name_class, review_class];
-        chrome.tabs.sendMessage(currentTab.id, { action: 'sendProductNameClass', resp}, function (response) {
+        review_class = extract_review(extractedClasses);
+
+        resp = [product_name_class, reviewer_name_class, review_class];
+        chrome.tabs.sendMessage(currentTab.id, { action: 'sendProductNameClass', resp }, function (response) {
 
           product = response.product_name;
           users = response.users;
           reviews = response.reviews;
 
-          resultDiv.innerHTML=`<br><b>Product name:</b> ${product}`;
+          resultDiv.innerHTML = `<br> <sub id="alert" style: "color: red; text-align: center;"> Press the button again </sub> <br> <br>
+          <b>Product name:</b> ${product}`;
 
         });
-        
+
       });
 
 
@@ -48,20 +49,24 @@ document.addEventListener('DOMContentLoaded', function () {
         reviews: reviews
       })
     })
-      if (response.ok) {
-        const jsonResponse = await response.json();
-        var prediction = jsonResponse.prediction;
-        for (var i = 0; i < prediction.length; i++) {
-          var div = document.createElement("div");
-          div.innerHTML=`<hr><p><b>User:</b> ${users[i]}</p>
+    if (response.ok) {
+      const jsonResponse = await response.json();
+      var prediction = jsonResponse.prediction;
+      const alert= document.getElementById('alert')
+      console.log(alert)
+      resultDiv.removeChild(alert)
+      for (var i = 0; i < prediction.length; i++) {
+        var div = document.createElement("div");
+        div.innerHTML = `<hr><p><b>User:</b> ${users[i]}</p>
                           <p><b>Prediction:</b> ${prediction[i].originality_percentage} % Real</p>`;
-          resultDiv.appendChild(div);
-        }
-        console.log(prediction);
+        resultDiv.appendChild(div);
       }
+      console.log(prediction);
     }
+  }
 
-)  });
+  )
+});
 
 function extractClassesFromHTML(htmlString) {
 
@@ -70,7 +75,7 @@ function extractClassesFromHTML(htmlString) {
 
   const allClasses = [];
   const elements = tempElement.getElementsByTagName('*');
-  
+
   for (const element of elements) {
     const elementClasses = String(element.className).split(' ');
     allClasses.push(...elementClasses);
@@ -80,39 +85,39 @@ function extractClassesFromHTML(htmlString) {
   return uniqueClasses;
 }
 
-function  extract_product_name(allClasses){
-  pnames_class=["B_NuCI", "x-item-title__mainTitle", "pdp-e-i-head", "css-1gc4x7i"]
-  res=""
-    pnames_class.forEach(element => {
-      console.log(element)
-      if (allClasses.includes(element)){
-        res=element;
-        return;
-      }
-    });
-    return res;
+function extract_product_name(allClasses) {
+  pnames_class = ["B_NuCI", "x-item-title__mainTitle", "pdp-e-i-head", "css-1gc4x7i"]
+  res = ""
+  pnames_class.forEach(element => {
+    console.log(element)
+    if (allClasses.includes(element)) {
+      res = element;
+      return;
+    }
+  });
+  return res;
 }
-function  extract_reviewer_name(allClasses){
-  pnames_class=["_2V5EHH", "x-review-section__author", "_reviewUserName", "css-amd8cf"]
-  res=""
-    pnames_class.forEach(element => {
-      console.log(element)
-      if (allClasses.includes(element)){
-        res=element;
-        return;
-      }
-    });
-    return res;
+function extract_reviewer_name(allClasses) {
+  pnames_class = ["_2V5EHH", "x-review-section__author", "_reviewUserName", "css-amd8cf"]
+  res = ""
+  pnames_class.forEach(element => {
+    console.log(element)
+    if (allClasses.includes(element)) {
+      res = element;
+      return;
+    }
+  });
+  return res;
 }
-function  extract_review(allClasses){
-  pnames_class=["t-ZTKy", "x-review-section__content", "user-review", "css-1n0nrdk"]
-  res=""
-    pnames_class.forEach(element => {
-      console.log(element)
-      if (allClasses.includes(element)){
-        res=element;
-        return;
-      }
-    });
-    return res;
+function extract_review(allClasses) {
+  pnames_class = ["t-ZTKy", "x-review-section__content", "user-review", "css-1n0nrdk"]
+  res = ""
+  pnames_class.forEach(element => {
+    console.log(element)
+    if (allClasses.includes(element)) {
+      res = element;
+      return;
+    }
+  });
+  return res;
 }
