@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
       for (var i = 0; i < prediction.length; i++) {
         var div = document.createElement("div");
         div.innerHTML = `<hr><p><b>User:</b> ${users[i]}</p>
-                          <p><b>Prediction:</b> ${prediction[i].originality_percentage} % Real</p>`;
+                          <p><b>Prediction:</b> ${prediction[i].originality_percentage.toFixed(2)} % Real</p>`;
         resultDiv.appendChild(div);
       }
       console.log(prediction);
