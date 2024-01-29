@@ -9,27 +9,35 @@ document.addEventListener('DOMContentLoaded', function () {
   extractButton.addEventListener('click', async function () {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       var currentTab = tabs[0];
+      // Requesting the HTML content of the current tab from the scripting file
       chrome.tabs.sendMessage(currentTab.id, { action: 'extractHTML' }, function (response) {
         console.log('Popup received a response:', response);
 
         html_code = response && response.html ? response.html : '';
 
+        // Extarcting all the classes present in HTML code
         const extractedClasses = extractClassesFromHTML(html_code);
 
         product_name_class = extract_product_name(extractedClasses);
 
+        // If the current site is not supported by the extension
         if (!product_name_class) {
           resultDiv.innerHTML = `<br> <h3 id="notfound"> Oops! Sorry, TrueView does not support this site! <br><p> Please try on Flipkart, Snapdeal or Nykaa <p></h3> <br> <br>`;
           return;
         }
 
+        // Extracting the class name of element containing reviewer name
         reviewer_name_class = extract_reviewer_name(extractedClasses);
 
+        // Extracting the class name of element containing reviews
         review_class = extract_review(extractedClasses);
 
         resp = [product_name_class, reviewer_name_class, review_class];
+
+        // Sending the class names back to scripting file, to extract the content
         chrome.tabs.sendMessage(currentTab.id, { action: 'sendProductNameClass', resp }, function (response) {
 
+          // response containing the content of product name, user and review is received from scripting file
           product = response.product_name;
           users = response.users;
           reviews = response.reviews;
@@ -44,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+    // Submitting the user and review data to a server-side endpoint (/predict) for making prediction for originality
     const response = await fetch('http://localhost:5000/predict', {
       method: 'POST',
       headers: {
@@ -54,6 +63,8 @@ document.addEventListener('DOMContentLoaded', function () {
         reviews: reviews
       })
     })
+
+    // If response correct, displaying it to user
     if (response.ok) {
       const jsonResponse = await response.json();
       var prediction = jsonResponse.prediction;
@@ -73,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
   )
 });
 
+// Function to extract all class names from HTML
 function extractClassesFromHTML(htmlString) {
 
   const tempElement = document.createElement('div');
@@ -90,6 +102,7 @@ function extractClassesFromHTML(htmlString) {
   return uniqueClasses;
 }
 
+// Function to extract the class name for element containing product
 function extract_product_name(allClasses) {
   pnames_class = ["B_NuCI", "x-item-title__mainTitle", "pdp-e-i-head", "css-1gc4x7i"]
   res = ""
@@ -102,6 +115,8 @@ function extract_product_name(allClasses) {
   });
   return res;
 }
+
+// Function to extract the class name for element containing reviewer name
 function extract_reviewer_name(allClasses) {
   pnames_class = ["_2V5EHH", "x-review-section__author", "_reviewUserName", "css-amd8cf"]
   res = ""
@@ -114,6 +129,8 @@ function extract_reviewer_name(allClasses) {
   });
   return res;
 }
+
+// Function to extract the class name for element containing review text
 function extract_review(allClasses) {
   pnames_class = ["t-ZTKy", "x-review-section__content", "user-review", "css-1n0nrdk"]
   res = ""
