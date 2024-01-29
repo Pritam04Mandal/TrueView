@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         product_name_class = extract_product_name(extractedClasses);
 
+        if (!product_name_class) {
+          resultDiv.innerHTML = `<br> <h3 id="notfound"> Oops! Sorry, TrueView does not support this site! <br><p> Please try on Flipkart, Snapdeal or Nykaa <p></h3> <br> <br>`;
+          return;
+        }
+
         reviewer_name_class = extract_reviewer_name(extractedClasses);
 
         review_class = extract_review(extractedClasses);
