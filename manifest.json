@@ -1,0 +1,26 @@
+{
+    "name": "TrueView",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "description": "Detects the fake reviews",
+    "action": {
+        "default_title": "Get pages source",
+        "default_popup": "popup.html"
+    },
+
+    "permissions": [
+        "scripting",
+        "activeTab",
+        "tabs"
+    ],
+    "content_scripts": [
+        {
+          "matches": ["http://*/*", "https://*/*"],
+          "js": ["content.js"]
+        }
+      ],
+      
+      "background": {
+        "service_worker": "background.js"
+      }
+}
